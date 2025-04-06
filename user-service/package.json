@@ -20,12 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-<<<<<<< HEAD
     "@nestjs/common": "^11.0.13",
-=======
-    "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
->>>>>>> 85e258331bcedda463cffc978f3b65f5778ef5f3
     "@nestjs/core": "^11.0.1",
     "@nestjs/jwt": "^11.0.0",
     "@nestjs/mapped-types": "*",
