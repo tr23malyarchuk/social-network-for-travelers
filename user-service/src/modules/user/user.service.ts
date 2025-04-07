@@ -4,16 +4,18 @@ import { UserCreateDto } from './dto/user.dto';
 import { RpcException } from '@nestjs/microservices';
 import * as bcrypt from 'bcrypt';
 import { RoleCreateDto } from './dto/role.dto';
+import {AuthentificattionService} from '../authentificattion/authentificattion.service';
+
 @Injectable()
 export class UserService {
-    constructor(private readonly prisma:PrismaService){}
+    constructor(private readonly prisma:PrismaService, private readonly authentificationService: AuthentificattionService){}
     async findAll() {
         return this.prisma.user.findMany()
     }
     async create(dto: UserCreateDto)
     {
-        return this.prisma.user.create({
-                data: dto,  })
+        const user = await this.prisma.user.create({  data: dto,  })
+        return this.authentificationService.generateTokens({memberId: String(user.id), roleId: String(user.roleId)})
     }
 
     async findUserById(userId: number)
