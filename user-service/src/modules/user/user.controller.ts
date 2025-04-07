@@ -22,13 +22,13 @@ create(@Body() dto: UserCreateDto)
   return this.userService.create(dto)
 }
 
-@MessagePattern(patterns.USER.CREATE)
-async createUser(dto: UserCreateDto)
-{
-  console.log(dto);
-  this.logger.log('Creating user');
-  return this.userService.create(dto);
-}
+// @MessagePattern(patterns.USER.CREATE)
+// async createUser(dto: UserCreateDto)
+// {
+//   console.log(dto);
+//   this.logger.log('Creating user');
+//   return this.userService.create(dto);
+// }
 
 // @MessagePattern(patterns.USER.FIND_ALL)
 // async findAllUsers()
