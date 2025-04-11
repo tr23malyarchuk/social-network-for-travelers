@@ -5,7 +5,7 @@ import {MessagePattern} from '@nestjs/microservices';
 import { patterns } from '../patterns';
 import { RoleCreateDto } from './dto/role.dto';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   private readonly  logger = new Logger(UserController.name)
   constructor(private readonly userService: UserService) {}
@@ -15,9 +15,9 @@ findAll()
   return this.userService.findAll();
 }
 
-@Post()
+@Post('/register')
 @UsePipes(new ValidationPipe)
-create(@Body() dto: UserCreateDto)
+createUser(@Body() dto: UserCreateDto)
 {
   return this.userService.create(dto)
 }
