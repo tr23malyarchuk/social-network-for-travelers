@@ -24,16 +24,16 @@ model Role {
 
 model User {
   id Int @id @default(autoincrement())
-  nickname String
-  email String @unique
-  password String
+  email     String? @unique
+  nickname  String? 
+  password  String?
   roleId Int
   role Role @relation("RoleUsers", fields: [roleId], references: [id])
   posts Post[] @relation("UserPosts")
   comments Comment[] @relation("UserComments")
   likes Like[] @relation("UserLikes")
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime?
 }
 
 

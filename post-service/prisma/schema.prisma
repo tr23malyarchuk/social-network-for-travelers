@@ -23,52 +23,46 @@ model Role {
 
 
 model User {
-  id Int @id @default(autoincrement())
-  nickname String
-  email String @unique
-  password String
-  roleId Int
-  role Role @relation("RoleUsers", fields: [roleId], references: [id])
-  posts Post[] @relation("UserPosts")
-  comments Comment[] @relation("UserComments")
-  likes Like[] @relation("UserLikes")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  roleId    Int
+  role      Role     @relation("RoleUsers", fields: [roleId], references: [id])
+  posts     Post[]   @relation("UserPosts")
+  comments  Comment[] @relation("UserComments")
+  likes     Like[]    @relation("UserLikes") // Добавлено поле для связи с Like
 }
-
 
 model Post {
-  id Int @id @default(autoincrement())
-  userId Int 
-  user User @relation("UserPosts", fields: [userId], references: [id])
-  text String
-  imageUrl String
-  comments Comment[] @relation("PostComments")
-  likes Like[] @relation("PostLikes")
+  id        Int      @id @default(autoincrement())
+  title     String?
+  content   String?
+  text      String
+  imageUrl  String?
+  userId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  user      User     @relation("UserPosts", fields: [userId], references: [id])
+  comments  Comment[] @relation("PostComments")
+  likes     Like[]    @relation("PostLikes")
 }
 
-
-
- model Comment{
-  id Int @id @default(autoincrement())
-  postId Int
-  post Post @relation("PostComments", fields: [postId], references: [id])
-  userId Int
-  user User @relation("UserComments", fields: [userId], references: [id])
-  text String
+model Comment {
+  id        Int      @id @default(autoincrement())
+  text      String
+  postId    Int
+  userId    Int
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
- }
 
+  post      Post     @relation("PostComments", fields: [postId], references: [id])
+  user      User     @relation("UserComments", fields: [userId], references: [id])
+}
 
- model Like{
-  id Int @id @default(autoincrement())
-  postId Int
-  post Post @relation("PostLikes", fields: [postId], references: [id])
-  userId Int
-  user User  @relation("UserLikes", fields: [userId], references: [id])
+model Like {
+  id        Int      @id @default(autoincrement())
+  postId    Int
+  userId    Int
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
- }
+
+  post      Post     @relation("PostLikes", fields: [postId], references: [id])
+  user      User     @relation("UserLikes", fields: [userId], references: [id])
+}

@@ -1,9 +1,5 @@
-import { IsInt } from "class-validator"
-
-export class likeDto
-{
-    @IsInt()
-    postId: number
-    @IsInt()
-    userId: number
+// src/modules/post/dto/like.dto.ts
+export class likeDto {
+    readonly userId: number;
+    readonly postId: number;
 }

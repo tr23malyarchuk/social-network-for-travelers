@@ -1,28 +1,28 @@
-import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { Controller, Post, Body, Param, Get } from '@nestjs/common';
 import { PostService } from './post.service';
+import { PostDto } from './dto/post.dto';
 
-@Controller()
+@Controller('posts')
 export class PostController {
-  constructor(private readonly postService: PostService) {}
+    constructor(private readonly postService: PostService) {}
 
-  @MessagePattern('add_new_post')
-  async addNewPost(@Payload() postData: any) {
-    return this.postService.addNewPost(postData);
-  }
+    @Post()
+    async createPost(@Body() createPostDto: PostDto) {
+        return this.postService.create(createPostDto);
+    }
 
-  @MessagePattern('get_all_posts')
-  async getAllPosts() {
-    return this.postService.showPosts();
-  }
+    @Get()
+    async showPosts() {
+        return this.postService.showPosts();
+    }
 
-  @MessagePattern('add_new_comment')
-  async addNewComment(@Payload() data: any) {
-    return this.postService.addNewComment(data.postId, data.commentData);
-  }
+    @Get(':id/comments')
+    async showCommentsByPostId(@Param('id') id: number) {
+        return this.postService.showCommentsByPostId(id);
+    }
 
-  @MessagePattern('add_new_like')
-  async addNewLike(@Payload() data: any) {
-    return this.postService.addNewLike(data.postId, data.likeData);
-  }
+    @Get(':id/likes')
+    async showLikesForPost(@Param('id') id: number) {
+        return this.postService.showLikesForPost(id);
+    }
 }

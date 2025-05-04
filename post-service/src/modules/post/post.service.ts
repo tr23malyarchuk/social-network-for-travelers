@@ -1,82 +1,118 @@
+// src/modules/post/post.service.ts
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { PostDto} from './dto/post.dto';
+import { PostDto } from './dto/post.dto'; 
 import { RpcException } from '@nestjs/microservices';
 import { commentDto } from './dto/comment.dto';
 import { likeDto } from './dto/like.dto';
 
-
 @Injectable()
 export class PostService {
-    constructor(private readonly prisma:PrismaService){}
+    constructor(private readonly prisma: PrismaService) {}
 
-    async addNewPost(dto: PostDto)
-    {
-        try{
-            await this.prisma.user.findUnique({
-                where: {id: dto.userId},
-            })
-        }
-        catch(error){
+    // Метод для создания нового поста
+    async create(createPostDto: PostDto) {
+        try {
+          const user = await this.prisma.user.findUnique({
+            where: { id: createPostDto.userId },
+          });
+          if (!user) {
             throw new RpcException('User not found');
+          }
+        } catch (error) {
+          throw new RpcException('User not found');
         }
-        
-        return this.prisma.post.create({data: dto});
-    }
-    
-    async showPosts()
-    {
+      
+        // Использование правильных полей из DTO
+        return this.prisma.post.create({
+          data: {
+            title: createPostDto.title,    // Использование корректного названия поля из DTO
+            content: createPostDto.content,
+            userId: createPostDto.userId,
+            text: createPostDto.text,
+            imageUrl: createPostDto.imageUrl || '', // Пустая строка, если imageUrl не передан
+          },
+        });
+      }
+
+    // Метод для получения всех постов
+    async showPosts() {
         return this.prisma.post.findMany();
     }
 
-    async addNewComment(postId: number, dto: commentDto)
-    {
+    // Метод для добавления комментария к посту
+    async addNewComment(postId: number, dto: commentDto) {
         try {
-            const user = await this.prisma.user.findUnique({ where: { id: dto.userId } })
+            const user = await this.prisma.user.findUnique({ where: { id: dto.userId } });
             if (!user) {
-                throw new RpcException("User not found")
+                throw new RpcException('User not found');
             }
-        }
-
-        catch (error) {
-            throw new RpcException("Unable to add new comment")
+        } catch (error) {
+            throw new RpcException('Unable to add new comment');
         }
 
         try {
-            const post = await this.prisma.post.findUnique({ where: { id: postId } })
+            const post = await this.prisma.post.findUnique({ where: { id: postId } });
             if (!post) {
-                throw new RpcException("Post not found")
+                throw new RpcException('Post not found');
             }
+        } catch (error) {
+            throw new RpcException('Unable to add new comment');
         }
-        catch (error) {
-            throw new RpcException("Unable to add new comment")
-        }
-        return this.prisma.comment.create({ data: dto });
+
+        // Создание нового комментария
+        return this.prisma.comment.create({
+            data: {
+                text: dto.text, // Добавление текста комментария
+                userId: dto.userId,
+                postId: postId,
+            },
+        });
     }
 
-    async showCommentsByPostId(postId: number)
-    {
-        return this.prisma.comment.findMany({where: {postId: postId}})
-    } 
+    // Метод для получения всех комментариев по ID поста
+    async showCommentsByPostId(postId: number) {
+        return this.prisma.comment.findMany({ where: { postId: postId } });
+    }
 
-    async addNewLike(postId: number, dto: likeDto)
-    {
-        try{
-            const post = this.prisma.post.findUnique({where: {id: postId}})
-            if(!post)
-            {
-                throw new RpcException("Post not found")
+    // Метод для добавления лайка
+    async addNewLike(postId: number, dto: likeDto) {
+        try {
+            const post = await this.prisma.post.findUnique({ where: { id: postId } });
+            if (!post) {
+                throw new RpcException('Post not found');
             }
+        } catch (error) {
+            throw new RpcException('Unable to like');
         }
-        catch(error){
-            throw new RpcException("Unable to like")
-        }
-        return this.prisma.like.create({data: dto});
+
+        // Создание нового лайка
+        return this.prisma.like.create({ data: dto });
     }
 
-    async showLikesForPost(postID: number)
-    {
-        return this.prisma.like.findMany({where: {postId: postID}})
+    // Метод для получения всех лайков для поста
+    async showLikesForPost(postId: number) {
+        return this.prisma.like.findMany({ where: { postId: postId } });
     }
 
+    async addNewPost(createPostDto: PostDto) {
+        // Проверка на существование пользователя
+        const user = await this.prisma.user.findUnique({
+          where: { id: createPostDto.userId },
+        });
+        if (!user) {
+          throw new RpcException('User not found');
+        }
+      
+        // Создание нового поста
+        return this.prisma.post.create({
+          data: {
+            title: createPostDto.title,
+            content: createPostDto.content,
+            text: createPostDto.text,
+            imageUrl: createPostDto.imageUrl ?? '', // Используем пустую строку, если imageUrl не передан
+            userId: createPostDto.userId,
+          },
+        });
+      }
 }
