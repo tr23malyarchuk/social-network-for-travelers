@@ -1,50 +1,28 @@
-import { Controller, Get, Post, Body, UsePipes, ValidationPipe, Param } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { PostService } from './post.service';
-import { PostDto } from './dto/post.dto';
-import { commentDto } from './dto/comment.dto';
-import { likeDto } from './dto/like.dto';
 
-@Controller('posts')
+@Controller()
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
-  
-  @Post()
-  @UsePipes(new ValidationPipe)
-  AddNewPost(@Body() dto: PostDto)
-  {
-     return this.postService.addNewPost(dto);
+  @MessagePattern('add_new_post')
+  async addNewPost(@Payload() postData: any) {
+    return this.postService.addNewPost(postData);
   }
 
-  @Get()
-  getPosts()
-  {
+  @MessagePattern('get_all_posts')
+  async getAllPosts() {
     return this.postService.showPosts();
   }
 
-  @Post(':postId/comments')
-  addNewComment(@Param('postId') postId: string, @Body() dto: commentDto)
-  {
-     return this.postService.addNewComment(Number(postId), dto);
+  @MessagePattern('add_new_comment')
+  async addNewComment(@Payload() data: any) {
+    return this.postService.addNewComment(data.postId, data.commentData);
   }
 
-  @Get(":postId/comments")
-  showAllComments(@Param('postId') postId: string)
-  {
-    return this.postService.showCommentsByPostId(Number(postId));
+  @MessagePattern('add_new_like')
+  async addNewLike(@Payload() data: any) {
+    return this.postService.addNewLike(data.postId, data.likeData);
   }
-
-  @Post(':postId/like')
-  addNewLike(@Param('postId') postId: string, @Body() dto: likeDto)
-  {
-     return this.postService.addNewLike(Number(postId), dto);
-  }
-
-  @Get(':postId/likes')
-  showLikeForPost(@Param('postId') postId: string)
-  {
-     return this.postService.showLikesForPost(Number(postId));
-  }
-  
-
 }
