@@ -6,8 +6,8 @@ import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    JwtModule.register({}),       // або конфіг, якщо є
-    ConfigModule,                 // <-- ось це додай
+    JwtModule.register({}),       
+    ConfigModule,                 
   ],
   controllers: [AuthentificattionController],
   providers: [AuthentificattionService, JwtService],

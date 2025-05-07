@@ -4,6 +4,7 @@ import { UserCreateDto } from './dto/user.dto';
 import {MessagePattern} from '@nestjs/microservices';
 import { patterns } from '../patterns';
 import { RoleCreateDto } from './dto/role.dto';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('users')
 export class UserController {
@@ -77,4 +78,10 @@ async createRole(@Body() dto: RoleCreateDto)
 {
    return this.userService.createRole(dto);
 }
+
+@Post('login')
+async login(@Body() loginDto: LoginDto){
+  return this.userService.login(loginDto);
+}
+
 }

@@ -30,16 +30,16 @@ export class AuthentificattionService {
         };
       } 
 
-
       async verifyAccessToken(token: string): Promise<TokenPayload> {
+        const secret = this.configService.get<string>('JWT_SECRET') || 'very%s1Cr3t';
+        console.log('JWT_SECRET used in verify:', secret);
         try {
-          return this.jwtService.verify(token, {
-            secret: this.configService.get<string>('JWT_SECRET') || 'very%s1Cr3t',
-          });
+            return this.jwtService.verify(token, { secret });
         } catch (error) {
-          throw new RpcException(error);
+            console.log('JWT verification error:', error);
+            throw new RpcException(error);
         }
-      }
+    }
     
       async verifyRefreshToken(token: string): Promise<TokenPayload> {
         try {
