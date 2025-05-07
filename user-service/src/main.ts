@@ -1,20 +1,12 @@
 import { NestFactory } from '@nestjs/core';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { UserModule } from './modules/user/user.module';
+import { AppModule } from './app.module';
+import { Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
-  const app = await NestFactory.create(UserModule);
-
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.RMQ,
-    options: {
-      urls: ['amqp://localhost:5672'],
-      queue: 'user-service',
-    },
+  const app = await NestFactory.createMicroservice(AppModule, {
+    transport: Transport.TCP,
+    options: { port: 4001 },
   });
-
-  await app.startAllMicroservices();
-  await app.listen(3001);
+  await app.listen();
 }
-
 bootstrap();

@@ -1,6 +1,6 @@
 // src/modules/post/post.service.ts
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../../prisma.service';
 import { PostDto } from './dto/post.dto'; 
 import { RpcException } from '@nestjs/microservices';
 import { commentDto } from './dto/comment.dto';

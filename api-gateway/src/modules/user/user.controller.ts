@@ -1,33 +1,12 @@
-import {
-  Controller,
-  Logger,
-  Post,
-  Body,
-  UseGuards,
-  Get,
-  Request,
-} from '@nestjs/common';
-import { AuthGuard } from '../../guards/auth.guard';
-
-import { UserService } from './user.service';
-import { User } from './dto';
+import { Controller, Post, Body, Inject } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Controller('user')
-// @UseGuards(AuthGuard)
 export class UserController {
-  private readonly logger = new Logger(UserController.name);
-
-  constructor(private readonly userService: UserService) {}
+  constructor(@Inject('USER_SERVICE') private client: ClientProxy) {}
 
   @Post()
-  async createUser(@Body() user: User) {
-    this.logger.log('Creating user');
-    return this.userService.createUser(user);
-  }
-
-  @UseGuards(AuthGuard)
-  @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
+  async createUser(@Body() data: any) {
+    return this.client.send('create_user', data);
   }
 }
