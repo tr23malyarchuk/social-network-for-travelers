@@ -49,7 +49,7 @@ export class AuthentificattionController {
 //   return this.authentificattionService.verifyAccessToken(token);
 // }
 @Post('accessVerify')
-async verifyAccessToken(@Body('token') token: string): Promise<boolean> {
+async verifyAccessToken(@Body('token') token: string): Promise<TokenPayload> {
   console.log('verifyAccessToken CALLED');
 
   if (!token) {
@@ -59,7 +59,8 @@ async verifyAccessToken(@Body('token') token: string): Promise<boolean> {
 
   console.log('Received token:', token);
 
-  const isValid = token === 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjUiLCJyb2xlSWQiOiIyIiwiaWF0IjoxNzQ2NzI3NTI0LCJleHAiOjE3NDY4MTM5MjR9.astwk-zoHCaM5yFp-bM46FvvprAY8uhmHzNm9udKC2A'; // твій справжній токен
+  const isValid = this.authentificattionService.verifyAccessToken(token);
+  //token === 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjUiLCJyb2xlSWQiOiIyIiwiaWF0IjoxNzQ2NzI3NTI0LCJleHAiOjE3NDY4MTM5MjR9.astwk-zoHCaM5yFp-bM46FvvprAY8uhmHzNm9udKC2A'; // твій справжній токен
 
   console.log('Verification result:', isValid);
 
