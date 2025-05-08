@@ -10,8 +10,6 @@ import axios from 'axios';
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   private readonly logger = new Logger(JwtAuthGuard.name);
-
-  // URL твого authentication-service (заміни на актуальний)
   private readonly authServiceUrl = 'http://localhost:3001/authentificattion/accessVerify';
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -27,22 +25,18 @@ export class JwtAuthGuard implements CanActivate {
     if (bearer !== 'Bearer' || !token) {
       throw new UnauthorizedException('Invalid token format');
     }
-
-    
-      // HTTP POST-запит до authentication-service
+    try{
       const response = await axios.post(`${this.authServiceUrl}`, {
         token,
       });
+    }catch(error)
+    {
+      throw new UnauthorizedException('Token is invalid');
+    }
 
-      if (!response.data) {
-        throw new UnauthorizedException('Invalid token');
-      }
-
+      // if (!response.data) {
+      //   throw new UnauthorizedException('Invalid token');
+      // }
       return true;
-//     } catch (err) {
-//       this.logger.error(`Token verification failed for token: ${token}`, err);
-// throw new UnauthorizedException(`Token verification failed for token: ${token}`, err );
-
-//     }
   }
 }
