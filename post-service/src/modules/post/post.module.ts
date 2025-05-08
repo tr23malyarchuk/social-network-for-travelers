@@ -9,7 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),  // 👈 Додати це, щоб .env працював
+    ConfigModule.forRoot(),  
 
     JwtModule.registerAsync({
       imports: [ConfigModule],

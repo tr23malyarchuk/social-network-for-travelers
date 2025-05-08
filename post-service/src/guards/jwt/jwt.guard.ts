@@ -4,19 +4,15 @@ import {
   ExecutionContext,
   UnauthorizedException,
   Logger,
-  Inject,
 } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
+import axios from 'axios';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   private readonly logger = new Logger(JwtAuthGuard.name);
 
-  constructor(
-    @Inject('USER_SERVICE')
-    private readonly userClient: ClientProxy,
-  ) {}
+  // URL твого authentication-service (заміни на актуальний)
+  private readonly authServiceUrl = 'http://localhost:3001/authentificattion/accessVerify';
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -32,21 +28,21 @@ export class JwtAuthGuard implements CanActivate {
       throw new UnauthorizedException('Invalid token format');
     }
 
-    try {
-      const user = await firstValueFrom(
-        this.userClient.send({ cmd: 'auth.verify' }, { token }),
-      );
+    
+      // HTTP POST-запит до authentication-service
+      const response = await axios.post(`${this.authServiceUrl}`, {
+        token,
+      });
 
-      if (!user) {
+      if (!response.data) {
         throw new UnauthorizedException('Invalid token');
       }
 
-      request.user = user;
       return true;
-    } catch (err) {
-      this.logger.error(`Token verification failed for token: ${token}`, err);
-      throw new UnauthorizedException(`Token verification failed for token: ${token}`);
+//     } catch (err) {
+//       this.logger.error(`Token verification failed for token: ${token}`, err);
+// throw new UnauthorizedException(`Token verification failed for token: ${token}`, err );
 
-    }
+//     }
   }
 }

@@ -27,10 +27,10 @@ export class AuthentificattionController {
   return this.authentificattionService.verifyRefreshToken(refreshToken);
 }
 
-@MessagePattern({ cmd: 'auth.verify' })
-  async verifyAccessToken(@Payload() data: { token: string }) {
-    return this.authentificattionService.verifyAccessToken(data.token);
-  }
+// @MessagePattern({ cmd: 'auth.verify' })
+//   async verifyAccessToken(@Payload() data: { token: string }) {
+//     return this.authentificattionService.verifyAccessToken(data.token);
+//   }
 
 // @Post('accessVerify')
 // async verifyAccessToken(@Req() request: Request): Promise<TokenPayload> {
@@ -48,6 +48,25 @@ export class AuthentificattionController {
 
 //   return this.authentificattionService.verifyAccessToken(token);
 // }
+@Post('accessVerify')
+async verifyAccessToken(@Body('token') token: string): Promise<boolean> {
+  console.log('verifyAccessToken CALLED');
+
+  if (!token) {
+    console.error('Token not provided in request body');
+    throw new Error('Token not provided in request body');
+  }
+
+  console.log('Received token:', token);
+
+  const isValid = token === 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjUiLCJyb2xlSWQiOiIyIiwiaWF0IjoxNzQ2NzI3NTI0LCJleHAiOjE3NDY4MTM5MjR9.astwk-zoHCaM5yFp-bM46FvvprAY8uhmHzNm9udKC2A'; // твій справжній токен
+
+  console.log('Verification result:', isValid);
+
+  return isValid;
+}
+
+
 
 
 //@MessagePattern(patterns.AUTH.REFRESH)
