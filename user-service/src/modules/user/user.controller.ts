@@ -1,12 +1,14 @@
-// user.controller.ts (user-service)
-import { Controller } from '@nestjs/common';
+import { Logger, Controller, Put, Patch, Get, Post, UsePipes, Body, ValidationPipe, Param, Delete} from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserCreateDto } from './dto/user.dto';
+import {MessagePattern} from '@nestjs/microservices';
+import { patterns } from '../patterns';
 import { RoleCreateDto } from './dto/role.dto';
 import { LoginDto } from './dto/login.dto';
 
-@Controller()
+@Controller('users')
 export class UserController {
+  private readonly  logger = new Logger(UserController.name)
   constructor(private readonly userService: UserService) {}
 @Get()
 findAll()
