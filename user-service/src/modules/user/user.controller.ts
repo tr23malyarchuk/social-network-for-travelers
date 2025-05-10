@@ -1,10 +1,7 @@
 // user.controller.ts (user-service)
 import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UserService } from './user.service';
 import { UserCreateDto } from './dto/user.dto';
-import {MessagePattern} from '@nestjs/microservices';
-import { patterns } from '../patterns';
 import { RoleCreateDto } from './dto/role.dto';
 import { LoginDto } from './dto/login.dto';
 
