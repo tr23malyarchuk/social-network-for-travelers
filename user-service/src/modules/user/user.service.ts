@@ -5,6 +5,7 @@ import { RpcException } from '@nestjs/microservices';
 import * as bcrypt from 'bcrypt';
 import { RoleCreateDto } from './dto/role.dto';
 import {AuthentificattionService} from '../authentificattion/authentificattion.service';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class UserService {
@@ -69,5 +70,22 @@ export class UserService {
     async createRole(dto: RoleCreateDto)
     {
         return this.prisma.role.create({data: dto});
+    }
+    
+    async login(loginDto: LoginDto)
+    {
+        const user = await this.prisma.user.findUnique({where: {email: loginDto.email}})
+        if(!user)
+        {
+            return "Login or password is invalid";
+        }
+        if(user.password === loginDto.password)
+        {
+            return this.authentificationService.generateTokens({memberId: String(user.id), roleId: String(user.roleId)})
+        }
+        else
+        {
+            return "Login or password is invalid";
+        }
     }
 }

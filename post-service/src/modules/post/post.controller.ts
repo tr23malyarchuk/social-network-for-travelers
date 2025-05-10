@@ -1,20 +1,29 @@
-import { Controller, Post, Body, Param, Get } from '@nestjs/common';
+import { Controller, Get, Post, Body, UsePipes, ValidationPipe, Param, UseGuards } from '@nestjs/common';
 import { PostService } from './post.service';
 import { PostDto } from './dto/post.dto';
+import { commentDto } from './dto/comment.dto';
+import { likeDto } from './dto/like.dto';
+import {JwtAuthGuard} from '../../guards/jwt/jwt.guard';
 
 @Controller('posts')
 export class PostController {
-    constructor(private readonly postService: PostService) {}
+  constructor(private readonly postService: PostService) {}
 
-    @Post()
-    async createPost(@Body() createPostDto: PostDto) {
-        return this.postService.create(createPostDto);
-    }
+  
+  @Post()
+  @UsePipes(new ValidationPipe)
+  @UseGuards(JwtAuthGuard)
+  AddNewPost(@Body() dto: PostDto)
+  {
+     return this.postService.addNewPost(dto);
+  }
 
-    @Get()
-    async showPosts() {
-        return this.postService.showPosts();
-    }
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  getPosts()
+  {
+    return this.postService.showPosts();
+  }
 
     @Get(':id/comments')
     async showCommentsByPostId(@Param('id') id: number) {

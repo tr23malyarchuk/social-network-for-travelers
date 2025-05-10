@@ -1,6 +1,6 @@
-import { Controller, Logger, Put, Patch, Get, Post, UsePipes, Body, ValidationPipe, Param, Delete } from '@nestjs/common';
+import { Controller, Logger, Put, Patch, Get, Post, UsePipes, Body, ValidationPipe, Param, Delete, Req } from '@nestjs/common';
 import { AuthentificattionService } from './authentificattion.service';
-import { MessagePattern } from '@nestjs/microservices';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { patterns } from '../patterns';
 import { link } from 'fs';
 import { Tokens, TokenPayload } from './dto/token.dto';
@@ -26,6 +26,48 @@ export class AuthentificattionController {
   this.logger.log('Verifying token');
   return this.authentificattionService.verifyRefreshToken(refreshToken);
 }
+
+// @MessagePattern({ cmd: 'auth.verify' })
+//   async verifyAccessToken(@Payload() data: { token: string }) {
+//     return this.authentificattionService.verifyAccessToken(data.token);
+//   }
+
+// @Post('accessVerify')
+// async verifyAccessToken(@Req() request: Request): Promise<TokenPayload> {
+//   const authHeader = request.headers['authorization'];
+
+//   if (!authHeader || Array.isArray(authHeader)) {
+//     throw new Error('Authorization header is missing or invalid format');
+//   }
+
+//   const token = authHeader.split(' ')[1];
+
+//   if (!token) {
+//     throw new Error('Token not found in Authorization header');
+//   }
+
+//   return this.authentificattionService.verifyAccessToken(token);
+// }
+@Post('accessVerify')
+async verifyAccessToken(@Body('token') token: string): Promise<TokenPayload> {
+  console.log('verifyAccessToken CALLED');
+
+  if (!token) {
+    console.error('Token not provided in request body');
+    throw new Error('Token not provided in request body');
+  }
+
+  console.log('Received token:', token);
+
+  const isValid = this.authentificattionService.verifyAccessToken(token);
+  //token === 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjUiLCJyb2xlSWQiOiIyIiwiaWF0IjoxNzQ2NzI3NTI0LCJleHAiOjE3NDY4MTM5MjR9.astwk-zoHCaM5yFp-bM46FvvprAY8uhmHzNm9udKC2A'; // твій справжній токен
+
+  console.log('Verification result:', isValid);
+
+  return isValid;
+}
+
+
 
 
 //@MessagePattern(patterns.AUTH.REFRESH)
