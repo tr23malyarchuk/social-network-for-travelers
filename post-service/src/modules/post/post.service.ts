@@ -1,14 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { PostDto} from './dto/post.dto';
 import { RpcException } from '@nestjs/microservices';
 import { commentDto } from './dto/comment.dto';
 import { likeDto } from './dto/like.dto';
-
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class PostService {
-    constructor(private readonly prisma:PrismaService){}
+    constructor(private readonly prisma:PrismaService, /*@Inject('IMAGE_PROCCESSING') private readonly client: ClientProxy,*/){}
 
     async addNewPost(dto: PostDto)
     {
@@ -20,7 +20,7 @@ export class PostService {
         catch(error){
             throw new RpcException('User not found');
         }
-        
+        // await this.client.emit('proccesImage', {imageUrl: dto.imageUrl});
         return this.prisma.post.create({data: dto});
     }
     

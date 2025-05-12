@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { UserCreateDto } from './dto/user.dto';
 import { RpcException } from '@nestjs/microservices';
@@ -77,7 +77,7 @@ export class UserService {
         const user = await this.prisma.user.findUnique({where: {email: loginDto.email}})
         if(!user)
         {
-            return "Login or password is invalid";
+            throw new UnauthorizedException('Login or passsword is invalid');
         }
         if(user.password === loginDto.password)
         {
@@ -85,7 +85,7 @@ export class UserService {
         }
         else
         {
-            return "Login or password is invalid";
+            throw new UnauthorizedException('Login or password is invalid');
         }
     }
 }

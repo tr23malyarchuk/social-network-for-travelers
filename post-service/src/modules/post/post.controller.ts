@@ -19,13 +19,13 @@ export class PostController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
   getPosts()
   {
     return this.postService.showPosts();
   }
 
   @Post(':postId/comments')
+  @UseGuards(JwtAuthGuard)
   addNewComment(@Param('postId') postId: string, @Body() dto: commentDto)
   {
      return this.postService.addNewComment(Number(postId), dto);
@@ -38,6 +38,7 @@ export class PostController {
   }
 
   @Post(':postId/like')
+  @UseGuards(JwtAuthGuard)
   addNewLike(@Param('postId') postId: string, @Body() dto: likeDto)
   {
      return this.postService.addNewLike(Number(postId), dto);
@@ -48,6 +49,5 @@ export class PostController {
   {
      return this.postService.showLikesForPost(Number(postId));
   }
-  
 
 }
