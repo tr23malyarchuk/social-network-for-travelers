@@ -7,6 +7,11 @@ function Newspage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const savedPosts = localStorage.getItem("savedPosts");
+    if (savedPosts) {
+      setPosts(JSON.parse(savedPosts));
+      return;
+    }
     if (!token) {
       fetch("http://localhost:3001/users/login", {
         method: "POST",
@@ -56,30 +61,19 @@ function Newspage() {
   if (error) return <div>{error}</div>;
 
   const likePost = (id) => {
-    fetch(`http://localhost:3000/posts/${id}/like`, {
-      method: "POST",
-    }).then(() => {
-      setPosts(
-        posts.map((post) =>
-          post.id === id ? { ...post, likes: post.likes + 1 } : post
-        )
-      );
-    });
+    const updated = posts.map((post) =>
+      post.id === id ? { ...post, likes: post.likes + 1 } : post
+    );
+    setPosts(updated);
+    localStorage.setItem("savedPosts", JSON.stringify(updated));
   };
 
   const addComment = (id, comment) => {
-    fetch(`http://localhost:3000/posts/${id}/comment`, {
-      method: "POST",
-      body: JSON.stringify({ text: comment }),
-    }).then(() => {
-      setPosts(
-        posts.map((post) =>
-          post.id === id
-            ? { ...post, comments: [...post.comments, comment] }
-            : post
-        )
-      );
-    });
+    const updated = posts.map((post) =>
+      post.id === id ? { ...post, comments: [...post.comments, comment] } : post
+    );
+    setPosts(updated);
+    localStorage.setItem("savedPosts", JSON.stringify(updated));
   };
 
   return (
