@@ -7,11 +7,6 @@ function Newspage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const savedPosts = localStorage.getItem("savedPosts");
-    if (savedPosts) {
-      setPosts(JSON.parse(savedPosts));
-      return;
-    }
     if (!token) {
       fetch("http://localhost:3001/users/login", {
         method: "POST",
@@ -61,21 +56,13 @@ function Newspage() {
   if (error) return <div>{error}</div>;
 
   const likePost = (id) => {
-    const updated = posts.map((post) =>
-      post.id === id ? { ...post, likes: post.likes + 1 } : post
-    );
-    setPosts(updated);
-    localStorage.setItem("savedPosts", JSON.stringify(updated));
+    setPosts(posts.map(p => p.id === id ? { ...p, likes: p.likes + 1 } : p));
   };
 
   const addComment = (id, comment) => {
-    const updated = posts.map((post) =>
-      post.id === id ? { ...post, comments: [...post.comments, comment] } : post
-    );
-    setPosts(updated);
-    localStorage.setItem("savedPosts", JSON.stringify(updated));
+    setPosts(posts.map(p => p.id === id ? { ...p, comments: [...p.comments, comment] } : p));
   };
-
+  
   return (
     <div>
       {posts.map((post) => (
