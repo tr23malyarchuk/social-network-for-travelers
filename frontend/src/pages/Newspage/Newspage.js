@@ -56,10 +56,28 @@ function Newspage() {
   if (error) return <div>{error}</div>;
 
   const likePost = (id) => {
+    const token = Cookies.get("accessToken");
+    fetch(`http://localhost:3000/posts/${id}/like`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ postId: id, userId: 1 })
+    });
     setPosts(posts.map(p => p.id === id ? { ...p, likes: p.likes + 1 } : p));
   };
-
+  
   const addComment = (id, comment) => {
+    const token = Cookies.get("accessToken");
+    fetch(`http://localhost:3000/posts/${id}/comments`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ postId: id, userId: 1, text: comment })
+    });
     setPosts(posts.map(p => p.id === id ? { ...p, comments: [...p.comments, comment] } : p));
   };
 
