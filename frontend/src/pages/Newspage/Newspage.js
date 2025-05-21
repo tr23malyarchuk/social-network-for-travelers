@@ -1,4 +1,5 @@
 import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 import React, { useState, useEffect } from "react";
 import Post from "../../components/Post/Post";
 
@@ -55,28 +56,37 @@ function Newspage() {
 
   if (error) return <div>{error}</div>;
 
+  const getUserId = () => {
+    const token = Cookies.get("accessToken");
+    if (!token) return null;
+    const decoded = jwtDecode(token);
+    return Number(decoded.memberId);
+  };
+  
   const likePost = (id) => {
     const token = Cookies.get("accessToken");
+    const userId = getUserId();
     fetch(`http://localhost:3000/posts/${id}/like`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ postId: id, userId: 1 })
+      body: JSON.stringify({ postId: id, userId })
     });
     setPosts(posts.map(p => p.id === id ? { ...p, likes: p.likes + 1 } : p));
   };
   
   const addComment = (id, comment) => {
     const token = Cookies.get("accessToken");
+    const userId = getUserId();
     fetch(`http://localhost:3000/posts/${id}/comments`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ postId: id, userId: 1, text: comment })
+      body: JSON.stringify({ postId: id, userId, text: comment })
     });
     setPosts(posts.map(p => p.id === id ? { ...p, comments: [...p.comments, comment] } : p));
   };
