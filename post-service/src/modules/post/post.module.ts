@@ -9,8 +9,20 @@ import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),  
+    ClientsModule.register([
+      {
+        name: 'IMAGE_PROCCESSING',
+        transport: Transport.RMQ,
+        options: {
+          urls: ['amqp://localhost:5672'],
+          queue: 'image_queue',
+          queueOptions: { durable: false },
+        },
+      },
+    ]),
 
+    ConfigModule.forRoot(),  
+    
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
