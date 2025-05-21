@@ -1,24 +1,22 @@
+import Cookies from "js-cookie";
 import React, { useState, useEffect } from "react";
 import Post from "../../components/Post/Post";
 
 function Newspage() {
   const [posts, setPosts] = useState([]);
-  const [token, setToken] = useState(localStorage.getItem("accessToken") || "");
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!token) {
-      fetch("http://localhost:3001/users/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      })
-        .then((data) => {
-          localStorage.setItem("accessToken", data.accessToken);
-          setToken(data.accessToken);
-        })
-        .catch((err) => setError(err.message));
-      return;
+    const envToken = process.env.REACT_APP_ACCESS_TOKEN;
+    const currentToken = Cookies.get("accessToken");
+    if (!currentToken && envToken) {
+      Cookies.set("accessToken", envToken, { expires: 1 });
     }
+  }, []);
+
+  useEffect(() => {
+    const token = Cookies.get("accessToken");
+    if (!token) return;
 
     fetch("http://localhost:3000/posts", {
       headers: {
@@ -26,7 +24,9 @@ function Newspage() {
         "Content-Type": "application/json",
       },
     })
-      .then((res) => {
+      .then(async (res) => {
+        const newToken = res.headers.get("_.Token");
+        if (newToken) Cookies.set("accessToken", newToken, { expires: 1 });
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         return res.json();
       })
@@ -51,7 +51,7 @@ function Newspage() {
         setPosts(postsWithExtras);
       })
       .catch((err) => setError(err.message));
-  }, [token]);
+  }, []);
 
   if (error) return <div>{error}</div>;
 
@@ -62,7 +62,7 @@ function Newspage() {
   const addComment = (id, comment) => {
     setPosts(posts.map(p => p.id === id ? { ...p, comments: [...p.comments, comment] } : p));
   };
-  
+
   return (
     <div>
       {posts.map((post) => (
