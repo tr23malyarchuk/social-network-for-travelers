@@ -1,12 +1,12 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import NewsFeed from "./pages/Newspage/Newspage";
-import Formpage from "./pages/Formpage/Formpage";
-import "./App.css";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import './App.css';
 
-function App() {
-  return (
-    <Router>
+const NewsFeed = React.lazy(() => import('./pages/Newspage/Newspage'));
+const Formpage = React.lazy(() => import('./pages/Formpage/Formpage'));
+
+const App = () => (
+<Router>
       <nav className="navbar">
         <Link to="/" className="nav-link">Новини</Link>
         <Link to="/create" className="nav-link">Створити пост</Link>
@@ -16,7 +16,6 @@ function App() {
         <Route path="/create" element={<Formpage />} />
       </Routes>
     </Router>
-  );
-}
+);
 
 export default App;
