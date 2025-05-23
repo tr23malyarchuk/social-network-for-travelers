@@ -110,7 +110,7 @@ export default function Newspage() {
       likePost={likePost}
       onAddComment={(text) => addComment(post.id, text)}
       userId={userId}
-      users={users}  // Передаємо користувачів у Post
+      users={users}
     />
   ));
 }

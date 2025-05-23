@@ -1,25 +1,22 @@
 import React, { useState } from 'react';
-import UploadImageButton from '../UploadImageButton/UploadImageButton';
-import SendButton from '../SendButton/SendButton';
+import '../Post/Post.css';
 
-const PostForm = ({ onSubmit }) => {
-  const [image, setImage] = useState(null);
+function PostForm({ onSubmit }) {
   const [text, setText] = useState('');
+  const [image, setImage] = useState(null);
 
-  const handleImageUpload = (e) => {
+  const handleUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result);
-      };
+      reader.onloadend = () => setImage(reader.result);
       reader.readAsDataURL(file);
     }
   };
 
-  const handlePost = () => {
+  const handleSubmit = () => {
     if (text || image) {
-      onSubmit({ text, image });
+      onSubmit({ text, imageUrl: image });
       setText('');
       setImage(null);
     }
@@ -27,19 +24,19 @@ const PostForm = ({ onSubmit }) => {
 
   return (
     <div className="post">
-      {!image && <UploadImageButton onChange={handleImageUpload} />}
-      {image && <img src={image} alt="uploaded" className="post-image" />}
+      <input type="file" onChange={handleUpload} />
+      {image && <img src={image} alt="preview" className="post-image" />}
       <textarea
         className="comment-input"
-        placeholder="Додати коментар..."
+        placeholder="Додати текст..."
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
       <div className="button-container">
-        <SendButton onClick={handlePost} />
+        <button onClick={handleSubmit}>Опублікувати</button>
       </div>
     </div>
   );
-};
+}
 
 export default PostForm;
