@@ -1,65 +1,40 @@
 import React, { useState } from "react";
 import HeartButton from "../HeartButton/HeartButton";
 import "./Post.css";
-import SendButton from "../SendButton/SendButton";
+import Comment from "../Comment/Comment";
 
-function Post({ post, onLike, onAddComment }) {
-  const [commentText, setCommentText] = useState("");
-  const forbiddenWords = [
-    "бол",
-    "мам",
-    "хуй",
-    "бан",
-    "йоб",
-    "еб",
-    "твою",
-    "бля",
-    "сук",
-  ];
-
-  const handleComment = () => {
-    const text = commentText.trim().toLowerCase();
-    if (!text) return alert("Коментар не може бути порожнім");
-    for (let word of forbiddenWords) {
-      if (text.includes(word)) return alert("В коментарі є заборонене слово");
-    }
-    onAddComment(post.id, commentText);
-    setCommentText("");
-  };
+function Post({ post, onLike, onAddComment, userId, likePost }) {
+  const [zoomed, setZoomed] = useState(false);
 
   return (
-    <div className="post">
-      {post.imageUrl && (
-        <img src={post.imageUrl} alt="post" className="post-image" />
-      )}
-      <p className="post-text">{post.text}</p>
+    <>
+      <div className="post">
+        {post.imageUrl && (
+          <img
+            src={post.imageUrl}
+            alt="post"
+            className="post-image"
+            onClick={() => setZoomed(true)}
+            style={{ cursor: "pointer" }}
+          />
+        )}
+        <p className="playpen-sans-post-text">{post.text}</p>
 
-      <HeartButton
-        likesCount={post.likes || 0}
-        onLike={() => onLike(post.id)}
-      />
-
-      <div className="button-container">
-        <input
-          className="comment-input"
-          value={commentText}
-          onChange={(e) => setCommentText(e.target.value)}
-          placeholder="Додайте коментар..."
+        <HeartButton
+          liked={post.likedUsers?.includes(userId)}
+          likesCount={post.likes}
+          onClick={() => likePost(post.id)}
         />
-        <SendButton onClick={handleComment} />
+
+        <Comment comments={post.comments || []} onAdd={onAddComment} />
       </div>
 
-      <div style={{ marginTop: "10px" }}>
-        Коментарі ({(post.comments || []).length}):
-        <ul className="comments-list">
-          {(post.comments || []).map((c, i) => (
-            <li key={i} className="comment-item">
-              {c}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
+      {zoomed && (
+        <div className="image-overlay" onClick={() => setZoomed(false)}>
+          <img src={post.imageUrl} alt="zoomed" className="zoomed-image" />
+        </div>
+      )}
+    </>
   );
 }
 

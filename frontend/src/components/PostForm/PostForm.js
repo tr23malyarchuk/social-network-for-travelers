@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import UploadImageButton from '../UploadImageButton/UploadImageButton';
 import SendButton from '../SendButton/SendButton';
-import './PostForm.css';
 
 const PostForm = ({ onSubmit }) => {
   const [image, setImage] = useState(null);
