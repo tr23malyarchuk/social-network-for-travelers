@@ -1,0 +1,29 @@
+.upload-button {
+    padding: 10px 16px;
+    background-color: #1e90ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background-color 0.3s ease;
+    display: block;
+    margin: 0 auto;
+  }
+  
+  .upload-button:hover {
+    background-color: #1c86ee;
+  }
+  
+  .upload-input {
+    display: none;
+  }
+  
+  .upload-preview {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-top: 12px;
+  }
+  
