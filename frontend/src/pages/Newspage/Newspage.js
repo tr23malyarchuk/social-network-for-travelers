@@ -7,16 +7,21 @@ const userId = Number(jwtDecode(token).memberId);
 
 export default function Newspage() {
   const [posts, setPosts] = useState([]);
+  const [users, setUsers] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:3000/posts", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
-      .then((data) =>
-        Promise.all(
-          data.map(async (p) => {
+    async function fetchData() {
+      try {
+        const postsRes = await fetch("http://localhost:3000/posts", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!postsRes.ok) throw postsRes.status;
+
+        const postsData = await postsRes.json();
+
+        const enrichedPosts = await Promise.all(
+          postsData.map(async (p) => {
             const likes = await fetch(
               `http://localhost:3000/posts/${p.id}/likes`,
               { headers: { Authorization: `Bearer ${token}` } }
@@ -31,10 +36,20 @@ export default function Newspage() {
               comments: comments.map((c) => c.text),
             };
           })
-        )
-      )
-      .then(setPosts)
-      .catch((e) => setError(`Error: ${e}`));
+        );
+        setPosts(enrichedPosts);
+
+        const usersRes = await fetch("http://localhost:3001/users", {
+        });
+        if (!usersRes.ok) throw usersRes.status;
+        const usersData = await usersRes.json();
+        setUsers(usersData);
+
+      } catch (e) {
+        setError(`Error: ${e}`);
+      }
+    }
+    fetchData();
   }, []);
 
   if (error) return <div>{error}</div>;
@@ -42,7 +57,7 @@ export default function Newspage() {
   const likePost = async (id) => {
     const post = posts.find((p) => p.id === id);
     const alreadyLiked = post.likedUsers?.includes(userId);
-  
+
     const res = await fetch(`http://localhost:3000/posts/${id}/like`, {
       method: "POST",
       headers: {
@@ -54,7 +69,7 @@ export default function Newspage() {
         userId,
       }),
     });
-  
+
     if (res.ok) {
       setPosts(
         posts.map((p) =>
@@ -71,7 +86,7 @@ export default function Newspage() {
       );
     }
   };
-  
+
   const addComment = (id, comment) => {
     fetch(`http://localhost:3000/posts/${id}/comments`, {
       method: "POST",
@@ -95,6 +110,7 @@ export default function Newspage() {
       likePost={likePost}
       onAddComment={(text) => addComment(post.id, text)}
       userId={userId}
+      users={users}  // Передаємо користувачів у Post
     />
   ));
 }

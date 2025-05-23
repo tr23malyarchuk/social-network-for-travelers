@@ -1,14 +1,27 @@
 import React, { useState } from "react";
+import { FaUserCircle } from "react-icons/fa";
 import HeartButton from "../HeartButton/HeartButton";
 import "./Post.css";
 import Comment from "../Comment/Comment";
 
-function Post({ post, onLike, onAddComment, userId, likePost }) {
+function Post({ post, onAddComment, userId, likePost, users }) {
   const [zoomed, setZoomed] = useState(false);
+  const user = users?.find((u) => u.id === post.userId);
 
   return (
     <>
       <div className="post">
+        <p>
+          <FaUserCircle
+            style={{
+              fontSize: "24px",
+              marginRight: "8px",
+              verticalAlign: "middle",
+            }}
+          />
+          {user ? user.nickname : "Unknown"}
+        </p>
+
         {post.imageUrl && (
           <img
             src={post.imageUrl}
