@@ -26,13 +26,13 @@ function Post({ post, onAddComment, userId, likePost, users }) {
             style={{ cursor: "pointer" }}
           />
         )}
-        <p>{post.text}</p>
+        <p className="playpen-sans-post-text">{post.text}</p>
         <HeartButton
           liked={post.likedUsers?.includes(userId)}
           likesCount={post.likes}
           onClick={() => likePost(post.id)}
         />
-        <Comment comments={post.comments || []} onAdd={onAddComment} />
+        <Comment className="comment" comments={post.comments || []} onAdd={onAddComment} />
       </div>
 
       {zoomed && (

@@ -9,6 +9,12 @@
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     font-family: Arial, sans-serif;
   }
+
+  .post > p {
+    font-family: "Playpen Sans", cursive;
+    font-size: 20px;
+    font-weight: 100;
+  }
   
   .post-image {
     width: 100%;
@@ -20,7 +26,6 @@
     text-align: center;
     font-family: "Playpen Sans", cursive;
     font-optical-sizing: auto;
-    font-size: 20px;
     font-weight: 100;
     font-style: normal;
   }
@@ -44,9 +49,9 @@
   }
   
   .comment-item {
-    padding: 6px 8px;
-    border-bottom: 1px solid #eee;
-    font-size: 13px;
+    font-family: "Playpen Sans", cursive;
+    font-size: 14px;  /* менше за 20px */
+    font-weight: 100;
     color: #555;
   }
 
