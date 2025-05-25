@@ -1,27 +1,23 @@
-import React from 'react';
-import PostForm from '../../components/PostForm/PostForm';
-import { jwtDecode } from 'jwt-decode';
-
-const token = process.env.REACT_APP_ACCESS_TOKEN;
-const userId = Number(jwtDecode(token).memberId);
+import React from "react";
+import PostForm from "../../components/PostForm/PostForm";
 
 const Formpage = () => {
-  const handleSubmit = (post) => {
-    fetch('http://localhost:3000/posts', {
-      method: 'POST',
+  const handleSubmit = async ({ text, imageUrl }) => {
+    const token = localStorage.getItem("token");
+    await fetch("http://localhost:3000/posts", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ ...post, userId }),
+      body: JSON.stringify({
+        userId: 1,
+        text,
+        imageUrl,
+      }),
     });
   };
-
-  return (
-    <div style={{ padding: '20px' }}>
-      <PostForm onSubmit={handleSubmit} />
-    </div>
-  );
+  return <PostForm onSubmit={handleSubmit} />;
 };
 
 export default Formpage;
