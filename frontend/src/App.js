@@ -54,7 +54,7 @@ const App = () => {
     setupUser().then((success) => setReady(success));
   }, []);
 
-  if (!ready) return <divс>Завантаження...</divс>;
+  if (!ready) return <div>Завантаження...</div>;
 
   return (
     <Router>
