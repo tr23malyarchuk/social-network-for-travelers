@@ -9,7 +9,16 @@ async function bootstrap() {
   app.use(json({ limit: '10mb' }));
   app.enableCors();
 
-  const uploadsPath = path.join('C:', 'Users', 'Bohdan', 'Desktop', 'social-network-for-travelers', 'backend', 'image-proccesing-service', 'uploads');
+  const uploadsPath = path.join(
+    'C:',
+    'Users',
+    'Bohdan',
+    'Desktop',
+    'social-network-for-travelers',
+    'backend',
+    'image-proccesing-service',
+    'uploads',
+  );
   console.log('Uploads folder:', uploadsPath);
   app.use('/uploads', express.static(uploadsPath));
 
