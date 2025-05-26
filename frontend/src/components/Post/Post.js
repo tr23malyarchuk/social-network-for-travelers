@@ -8,7 +8,9 @@ function Post({ post, onAddComment, userId, likePost, users }) {
   const [zoomed, setZoomed] = useState(false);
   const user = users.find((u) => u.id === post.userId);
 
-  const imageUrl = post.imageUrl ? `http://localhost:3000/uploads/${post.imageUrl}` : null;
+  const imageUrl = post.imageUrl
+    ? `http://localhost:3000/uploads/${post.imageUrl}`
+    : null;
 
   return (
     <>
@@ -32,7 +34,11 @@ function Post({ post, onAddComment, userId, likePost, users }) {
           likesCount={post.likes}
           onClick={() => likePost(post.id)}
         />
-        <Comment className="comment" comments={post.comments || []} onAdd={onAddComment} />
+        <Comment
+          className="comment"
+          comments={post.comments || []}
+          onAdd={onAddComment}
+        />
       </div>
 
       {zoomed && (

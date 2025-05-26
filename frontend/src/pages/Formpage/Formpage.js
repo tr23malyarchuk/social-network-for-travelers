@@ -11,7 +11,7 @@ const Formpage = () => {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        userId: 1,
+        userId: 11,
         text,
         imageUrl,
       }),

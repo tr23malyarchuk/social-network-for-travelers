@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import Post from "../../components/Post/Post";
 
 export default function Newspage() {
@@ -38,21 +38,27 @@ export default function Newspage() {
 
         const enrichedPosts = await Promise.all(
           postsData.map(async (p) => {
-            const likesRes = await fetch(`http://localhost:3000/posts/${p.id}/likes`, {
-              headers: { Authorization: `Bearer ${token}` },
-            });
+            const likesRes = await fetch(
+              `http://localhost:3000/posts/${p.id}/likes`,
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              }
+            );
             const likes = await likesRes.json();
 
-            const commentsRes = await fetch(`http://localhost:3000/posts/${p.id}/comments`, {
-              headers: { Authorization: `Bearer ${token}` },
-            });
+            const commentsRes = await fetch(
+              `http://localhost:3000/posts/${p.id}/comments`,
+              {
+                headers: { Authorization: `Bearer ${token}` },
+              }
+            );
             const comments = await commentsRes.json();
 
             return {
               ...p,
               likes: likes.length,
-              comments: comments.map(c => c.text),
-              likedUsers: likes.map(like => like.userId),
+              comments: comments.map((c) => c.text),
+              likedUsers: likes.map((like) => like.userId),
             };
           })
         );
@@ -74,7 +80,7 @@ export default function Newspage() {
   if (!userId) return <div>Loading...</div>;
 
   const likePost = async (id) => {
-    const post = posts.find(p => p.id === id);
+    const post = posts.find((p) => p.id === id);
     const alreadyLiked = post.likedUsers?.includes(userId);
 
     const res = await fetch(`http://localhost:3000/posts/${id}/like`, {
@@ -87,17 +93,19 @@ export default function Newspage() {
     });
 
     if (res.ok) {
-      setPosts(posts.map(p =>
-        p.id === id
-          ? {
-              ...p,
-              likes: p.likes + (alreadyLiked ? -1 : 1),
-              likedUsers: alreadyLiked
-                ? p.likedUsers.filter(uid => uid !== userId)
-                : [...(p.likedUsers || []), userId],
-            }
-          : p
-      ));
+      setPosts(
+        posts.map((p) =>
+          p.id === id
+            ? {
+                ...p,
+                likes: p.likes + (alreadyLiked ? -1 : 1),
+                likedUsers: alreadyLiked
+                  ? p.likedUsers.filter((uid) => uid !== userId)
+                  : [...(p.likedUsers || []), userId],
+              }
+            : p
+        )
+      );
     }
   };
 
@@ -110,12 +118,14 @@ export default function Newspage() {
       },
       body: JSON.stringify({ postId: id, userId, text: comment }),
     });
-    setPosts(posts.map(p =>
-      p.id === id ? { ...p, comments: [...p.comments, comment] } : p
-    ));
+    setPosts(
+      posts.map((p) =>
+        p.id === id ? { ...p, comments: [...p.comments, comment] } : p
+      )
+    );
   };
 
-  return posts.map(post => (
+  return posts.map((post) => (
     <Post
       key={post.id}
       post={post}
