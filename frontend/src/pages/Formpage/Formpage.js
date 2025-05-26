@@ -10,13 +10,10 @@ const Formpage = () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        userId: 1,
-        text,
-        imageUrl,
-      }),
+      body: JSON.stringify({ userId: 1, text, imageUrl }),
     });
   };
+
   return <PostForm onSubmit={handleSubmit} />;
 };
 

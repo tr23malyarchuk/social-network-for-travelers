@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import './PostForm.css';
 import SendButton from "../SendButton/SendButton";
+import './PostForm.css';
 
 const PostForm = ({ onSubmit }) => {
   const [text, setText] = useState("");
@@ -16,41 +16,34 @@ const PostForm = ({ onSubmit }) => {
     }
   };
 
-  const handleImageUrlChange = (e) => {
-    setImageUrl(e.target.value);
-    setValidImage(false);
-  };
-  
-  const onImageLoad = () => setValidImage(true);
-  const onImageError = () => setValidImage(false);
-
   return (
     <div className="post-form">
       <input
-        className="post-form-input"
         type="text"
         placeholder="URL картинки"
         value={imageUrl}
-        onChange={handleImageUrlChange}
+        onChange={(e) => {
+          setImageUrl(e.target.value);
+          setValidImage(false);
+        }}
       />
       {imageUrl && (
-        <img 
-          src={imageUrl} 
-          alt="Preview" 
-          onLoad={onImageLoad} 
-          onError={onImageError} 
-          style={{ 
-            display: validImage ? 'block' : 'none', 
-            maxWidth: '100%', 
-            borderRadius: '10px', 
-            marginTop: '10px' 
-          }} 
+        <img
+          src={imageUrl}
+          alt="Preview"
+          onLoad={() => setValidImage(true)}
+          onError={() => setValidImage(false)}
+          style={{
+            display: validImage ? "block" : "none",
+            maxWidth: "100%",
+            borderRadius: 10,
+            marginTop: 10,
+          }}
         />
       )}
       <textarea
-        className="post-form-textarea"
         value={text}
-        onChange={e => setText(e.target.value)}
+        onChange={(e) => setText(e.target.value)}
         placeholder="Додати текст"
         rows={3}
       />

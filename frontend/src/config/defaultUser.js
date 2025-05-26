@@ -1,5 +1,5 @@
 export const defaultUser = {
-  nickname: 'bohdan',
-  email: 'bohdan@gmail.com',
-  password: 'bohdan'
+  nickname: 'andriy',
+  email: 'andriy@gmail.com',
+  password: 'andriy'
 };
