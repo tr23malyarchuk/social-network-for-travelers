@@ -1,11 +1,20 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./App.css";
+import setupUser from "./components/SetupUser/SetupUser";
 
 const NewsFeed = React.lazy(() => import("./pages/Newspage/Newspage"));
 const Formpage = React.lazy(() => import("./pages/Formpage/Formpage"));
 
 const App = () => {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    setupUser().then((success) => setReady(success));
+  }, []);
+
+  if (!ready) return <div>Завантаження...</div>;
+
   return (
     <Router>
       <nav className="navbar">
